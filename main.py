@@ -91,3 +91,6 @@ with open(mmc_pack_path) as mmc_pack:
 
 with open(mmc_pack_path, 'w') as __out:
     json.dump(data, __out, indent=4)
+
+# Pack everything to a single archive
+shutil.make_archive(os.path.join(working_path, 'build', 'CleanroomMMC'), 'zip', output_path)
