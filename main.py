@@ -12,6 +12,7 @@ working_path = Util.get_current_directory()
 cache_path = os.path.join(working_path, 'build', 'downloadCache')
 output_path = os.path.join(working_path, 'build', 'output')
 template_path = os.path.join(working_path, 'template')
+lwjgl_version = ''  # Stub value
 
 for folder in [cache_path, output_path, template_path]:
     if not os.path.exists(folder):
@@ -27,8 +28,8 @@ for cleaningDir in [cache_path, output_path]:
             os.remove(path)
 
 # Download installer artifact
-URL = 'https://nightly.link/CleanroomMC/Cleanroom/workflows/BuildTest/dev%2Fmixin3/installer.zip'
-response = requests.get(URL)
+installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/workflows/BuildTest/dev%2Fmixin3/installer.zip'
+response = requests.get(installerURL)
 open(os.path.join(cache_path, 'installer.zip'), 'wb').write(response.content)
 
 # Prepare installer and template
@@ -65,6 +66,8 @@ with (open(installer_patches_path, 'r') as __in,
         else:
             sub_kd['name'] += '-universal'
             sub_kd['MMC-hint'] = 'local'
+        if 'org.lwjgl3:lwjgl3:' in kd['name']:
+            lwjgl_version = str(kd['name']).split(':')[2]
         out_json['libraries'].append(sub_kd)
 
     out_json['version'] = cleanroom_version
@@ -77,8 +80,14 @@ mmc_pack_path = os.path.join(output_path, 'mmc-pack.json')
 with open(mmc_pack_path) as mmc_pack:
     data = json.load(mmc_pack)
     for item in data['components']:
+        if 'LWJGL' in item['cachedName']:
+            item['version'] = lwjgl_version
+            item['cachedVersion'] = lwjgl_version
+        if 'Minecraft' in item['cachedName']:
+            item['cachedRequires'][0]['suggests'] = lwjgl_version
         if 'Cleanroom' in item['cachedName']:
             item['version'] = cleanroom_version
+            item['cachedVersion'] = cleanroom_version
 
 with open(mmc_pack_path, 'w') as __out:
     json.dump(data, __out, indent=4)
