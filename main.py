@@ -28,7 +28,7 @@ for cleaningDir in [cache_path, output_path]:
             os.remove(path)
 
 # Download installer artifact
-installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/workflows/BuildTest/dev%2Fmixin3/installer.zip'
+installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/workflows/BuildTest/main/installer.zip'
 response = requests.get(installerURL)
 open(os.path.join(cache_path, 'installer.zip'), 'wb').write(response.content)
 
