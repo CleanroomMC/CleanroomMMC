@@ -41,7 +41,7 @@ installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/workflows/BuildTest/'
 print('Installer URL: ' + installerURL)
 response = requests.get(installerURL)
 if not response.ok:
-    print('Response filed. Code: ' + str(response.status_code))
+    print('Response failed. Code: ' + str(response.status_code))
     sys.exit(1)
 print('Downloading installer')
 open(os.path.join(cache_path, 'installer.zip'), 'wb').write(response.content)
