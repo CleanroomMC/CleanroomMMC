@@ -2,6 +2,7 @@ import glob
 import json
 import os
 import shutil
+import urllib.parse
 
 import requests
 
@@ -27,8 +28,18 @@ for cleaningDir in [cache_path, output_path]:
         else:
             os.remove(path)
 
+
+# Get download branch from env
+defaultBranch = 'main'
+def getWorkingBranch():
+    env = os.getenv('cleanroomDownloadBranch')
+    if not env:
+        env = defaultBranch
+    return urllib.parse.quote(env, safe='')
+
+
 # Download installer artifact
-installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/workflows/BuildTest/main/installer.zip'
+installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/workflows/BuildTest/' + getWorkingBranch() + '/installer.zip'
 response = requests.get(installerURL)
 open(os.path.join(cache_path, 'installer.zip'), 'wb').write(response.content)
 

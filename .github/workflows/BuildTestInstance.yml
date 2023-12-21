@@ -9,6 +9,10 @@ name: Build Test Instance
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Cleanroom branch'
+        default: 'main'
 
 permissions:
   contents: read
@@ -32,6 +36,8 @@ jobs:
 
     - name: execute py script # run main.py
       run: python main.py
+      env:
+        cleanroomDownloadBranch: ${{ inputs.version }}
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.0
