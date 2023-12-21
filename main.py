@@ -2,13 +2,14 @@ import glob
 import json
 import os
 import shutil
-import urllib.parse
+import sys
 
 import requests
 
 import Util
 
 # Init
+print('---> Initialize')
 working_path = Util.get_current_directory()
 cache_path = os.path.join(working_path, 'build', 'downloadCache')
 output_path = os.path.join(working_path, 'build', 'output')
@@ -20,6 +21,7 @@ for folder in [cache_path, output_path, template_path]:
         os.makedirs(folder)
 
 # Clean cache folder
+print('---> Cleaning cache folder')
 for cleaningDir in [cache_path, output_path]:
     for item in os.listdir(cleaningDir):
         path = os.path.join(cleaningDir, item)
@@ -28,41 +30,48 @@ for cleaningDir in [cache_path, output_path]:
         else:
             os.remove(path)
 
-
 # Get download branch from env
+print('---> Get download branch from env')
 defaultBranch = 'main'
-def getWorkingBranch():
-    env = os.getenv('cleanroomDownloadBranch')
-    if not env:
-        env = defaultBranch
-    return urllib.parse.quote(env, safe='')
-
+branch = Util.getWorkingBranch(defaultBranch)
 
 # Download installer artifact
-installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/workflows/BuildTest/' + getWorkingBranch() + '/installer.zip'
+print('---> Download installer artifact')
+installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/workflows/BuildTest/' + branch + '/installer.zip'
+print('Installer URL: ' + installerURL)
 response = requests.get(installerURL)
+if not response.ok:
+    print('Response filed. Code: ' + str(response.status_code))
+    sys.exit()
+print('Downloading installer')
 open(os.path.join(cache_path, 'installer.zip'), 'wb').write(response.content)
 
 # Prepare installer and template
+print('---> Prepare installer and template')
 Util.extractArchive(cache_path, 'installer', cache_path)
 Util.extractArchive(cache_path, 'cleanroom', os.path.join(cache_path, 'installer'))
 Util.extractArchive(template_path, 'template', output_path)
 
 # Read cleanroom version
+print('---> Reading Cleanroom version')
 cleanroom_version = Util.findFileName(cache_path, 'cleanroom').split('-')[1]
+print('Cleanroom version: ' + cleanroom_version)
 
 # Create libraries folder and copy required
+print('---> Create libraries folder and copy required files')
 os.mkdir(os.path.join(output_path, 'libraries'))
 shutil.copyfile(
     glob.glob(os.path.join(cache_path, 'installer', '**', 'cleanroom*.jar'), recursive=True)[0],
     os.path.join(output_path, 'libraries', 'cleanroom-{version}-universal.jar'.format(version=cleanroom_version)))
 
-# Create patches file for Cleanroom
+# Create patch file for Cleanroom
+print('---> Create patch file for Cleanroom')
 cleanroom_patches_output_path = os.path.join(output_path, 'patches', 'com.cleanroommc.json')
 installer_patches_path = os.path.join(cache_path, 'installer', 'version.json')
 
 with (open(installer_patches_path, 'r') as __in,
       open(cleanroom_patches_output_path, 'r') as __out):
+    print('Parsing template patch file')
     data = json.load(__in)['libraries']
     out_json = json.load(__out)
 
@@ -84,11 +93,14 @@ with (open(installer_patches_path, 'r') as __in,
     out_json['version'] = cleanroom_version
 with open(cleanroom_patches_output_path, "w") as __out:
     json.dump(out_json, __out, indent=4)
+    print('Patch file created')
 
 # Patch mmc-pack.json
+print('---> Patching mmc-pack.json')
 mmc_pack_path = os.path.join(output_path, 'mmc-pack.json')
 
 with open(mmc_pack_path) as mmc_pack:
+    print('Parsing mmc-pack.json')
     data = json.load(mmc_pack)
     for item in data['components']:
         if 'LWJGL' in item['cachedName']:
@@ -102,6 +114,8 @@ with open(mmc_pack_path) as mmc_pack:
 
 with open(mmc_pack_path, 'w') as __out:
     json.dump(data, __out, indent=4)
+    print('Patched mmc-pack.json')
 
 # Pack everything to a single archive
-shutil.make_archive(os.path.join(working_path, 'build', 'CleanroomMMC'), 'zip', output_path)
+print('---> Archiving instance')
+print('Saved in: ' + shutil.make_archive(os.path.join(working_path, 'build', 'CleanroomMMC'), 'zip', output_path))

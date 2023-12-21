@@ -2,7 +2,7 @@ import json
 import os
 import sys
 import zipfile
-
+import urllib.parse
 
 def get_current_directory():
     list = sys.path[0].split(os.sep)
@@ -10,6 +10,16 @@ def get_current_directory():
     for element in list:
         return_str += element + os.sep
     return return_str.rstrip(os.sep)
+
+
+def getWorkingBranch(default):
+    env = os.getenv('cleanroomDownloadBranch')
+    if not env:
+        print('No branch was found. Use default branch: ' + default)
+        env = default
+    else:
+        print('Download branch: ' + env)
+    return urllib.parse.quote(env, safe='')
 
 
 # function to add to JSON
