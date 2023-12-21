@@ -32,7 +32,7 @@ for cleaningDir in [cache_path, output_path]:
 
 # Get download branch from env
 print('---> Get download branch from env')
-defaultBranch = 'main'
+defaultBranch = 'mai'
 branch = Util.getWorkingBranch(defaultBranch)
 
 # Download installer artifact
@@ -42,7 +42,7 @@ print('Installer URL: ' + installerURL)
 response = requests.get(installerURL)
 if not response.ok:
     print('Response filed. Code: ' + str(response.status_code))
-    sys.exit()
+    sys.exit(1)
 print('Downloading installer')
 open(os.path.join(cache_path, 'installer.zip'), 'wb').write(response.content)
 
