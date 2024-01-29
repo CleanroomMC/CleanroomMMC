@@ -66,7 +66,7 @@ shutil.copyfile(
 
 # Create patch file for Cleanroom
 print('---> Create patch file for Cleanroom')
-cleanroom_patches_output_path = os.path.join(output_path, 'patches', 'com.cleanroommc.json')
+cleanroom_patches_output_path = os.path.join(output_path, 'patches', 'net.minecraftforge.json')
 installer_patches_path = os.path.join(cache_path, 'installer', 'version.json')
 
 with (open(installer_patches_path, 'r') as __in,
