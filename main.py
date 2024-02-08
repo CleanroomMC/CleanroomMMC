@@ -32,7 +32,7 @@ for cleaningDir in [cache_path, output_path]:
 
 # Get download branch from env
 print('---> Get download branch from env')
-defaultBranch = 'mai'
+defaultBranch = 'main'
 branch = Util.getWorkingBranch(defaultBranch)
 
 # Download installer artifact
