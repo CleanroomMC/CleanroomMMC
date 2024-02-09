@@ -39,6 +39,8 @@ jobs:
       run: python main.py
       env:
         cleanroomDownloadBranch: ${{ inputs.version }}
+        commit_hash: ${{ github.event.client_payload.commit_hash }}
+        run_job_url: ${{ github.event.client_payload.run_job_url }}
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.0

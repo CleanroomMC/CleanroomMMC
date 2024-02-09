@@ -12,7 +12,7 @@ import Util
 # Init
 print('---> Initialize')
 commit_hash = os.getenv('commit_hash')
-run_job_id = os.getenv('run_job_id')
+run_job_url = os.getenv('run_job_url')
 
 working_path = Util.get_current_directory()
 cache_path = os.path.join(working_path, 'build', 'downloadCache')
@@ -120,14 +120,14 @@ with open(mmc_pack_path, 'w') as __out:
     print('Patched mmc-pack.json')
 
 # Create notes for instance if build callouts from CI
-if commit_hash and run_job_id:
+if commit_hash and run_job_url:
     print('---> Adding notes to instance.cfg')
     instance_cfg_path = os.path.join(output_path, 'instance.cfg')
     with open(instance_cfg_path, 'r') as instance_cfg:
         content = instance_cfg.read()
         content = re.sub(
             r"notes=.*",
-            rf"notes=This instance is built using Github Action.\\nUsing installer artifact from commit: {commit_hash}\\nURL: {run_job_id}",
+            rf"notes=This instance is built using Github Action.\\nUsing installer artifact from commit: {commit_hash}\\nAction URL: {run_job_url}",
             content)
     with open(instance_cfg_path, 'w') as __out:
         __out.write(content)
