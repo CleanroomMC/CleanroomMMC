@@ -9,6 +9,7 @@ name: Build Test Instance
 
 on:
   workflow_dispatch:
+    types: [cleanroom_upload_artifact]
     inputs:
       version:
         description: 'Cleanroom branch'

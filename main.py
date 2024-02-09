@@ -1,6 +1,7 @@
 import glob
 import json
 import os
+import re
 import shutil
 import sys
 
@@ -10,6 +11,9 @@ import Util
 
 # Init
 print('---> Initialize')
+commit_hash = os.getenv('commit_hash')
+run_job_id = os.getenv('run_job_id')
+
 working_path = Util.get_current_directory()
 cache_path = os.path.join(working_path, 'build', 'downloadCache')
 output_path = os.path.join(working_path, 'build', 'output')
@@ -33,7 +37,7 @@ for cleaningDir in [cache_path, output_path]:
 # Get download branch from env
 print('---> Get download branch from env')
 defaultBranch = 'main'
-branch = Util.getWorkingBranch(defaultBranch)
+branch = Util.get_working_branch(defaultBranch)
 
 # Download installer artifact
 print('---> Download installer artifact')
@@ -111,10 +115,22 @@ with open(mmc_pack_path) as mmc_pack:
         if 'Cleanroom' in item['cachedName']:
             item['version'] = cleanroom_version
             item['cachedVersion'] = cleanroom_version
-
 with open(mmc_pack_path, 'w') as __out:
     json.dump(data, __out, indent=4)
     print('Patched mmc-pack.json')
+
+# Create notes for instance if build callouts from CI
+if commit_hash and run_job_id:
+    print('---> Add notes to instance.cfg')
+    instance_cfg_path = os.path.join(output_path, 'instance.cfg')
+    with open(instance_cfg_path, 'r') as instance_cfg:
+        content = instance_cfg.read()
+        content = re.sub(
+            r"notes=.*",
+            rf"notes=This instance is built using Github Action.\\nUsing installer artifact from commit: {commit_hash}\\nURL: {run_job_id}",
+            content)
+    with open(instance_cfg_path, 'w') as __out:
+        __out.write(content)
 
 # Pack everything to a single archive
 print('---> Archiving instance')

@@ -4,18 +4,19 @@ import sys
 import zipfile
 import urllib.parse
 
+
 def get_current_directory():
-    list = sys.path[0].split(os.sep)
+    split_path = sys.path[0].split(os.sep)
     return_str = ''
-    for element in list:
+    for element in split_path:
         return_str += element + os.sep
     return return_str.rstrip(os.sep)
 
 
-def getWorkingBranch(default):
+def get_working_branch(default):
     env = os.getenv('cleanroomDownloadBranch')
     if not env:
-        print('No branch was found. Use default branch: ' + default)
+        print(f'No branch was found. Use default branch: {default}')
         env = default
     else:
         print('Download branch: ' + env)
