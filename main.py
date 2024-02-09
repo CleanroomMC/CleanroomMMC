@@ -121,7 +121,7 @@ with open(mmc_pack_path, 'w') as __out:
 
 # Create notes for instance if build callouts from CI
 if commit_hash and run_job_id:
-    print('---> Add notes to instance.cfg')
+    print('---> Adding notes to instance.cfg')
     instance_cfg_path = os.path.join(output_path, 'instance.cfg')
     with open(instance_cfg_path, 'r') as instance_cfg:
         content = instance_cfg.read()
@@ -131,6 +131,7 @@ if commit_hash and run_job_id:
             content)
     with open(instance_cfg_path, 'w') as __out:
         __out.write(content)
+    print('---> Added notes to mmc-pack.json')
 
 # Pack everything to a single archive
 print('---> Archiving instance')
