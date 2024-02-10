@@ -9,11 +9,12 @@ name: Build Test Instance
 
 on:
   workflow_dispatch:
-    types: [cleanroom_upload_artifact]
     inputs:
       version:
         description: 'Cleanroom branch'
         default: 'main'
+  repository_dispatch:
+    types: [cleanroom_upload_artifact]
 
 permissions:
   contents: read

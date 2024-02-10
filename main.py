@@ -41,7 +41,9 @@ branch = Util.get_working_branch(defaultBranch)
 
 # Download installer artifact
 print('---> Download installer artifact')
-installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/workflows/BuildTest/' + branch + '/installer.zip'
+installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/' \
+    + f'workflows/BuildTest/{branch}' if not run_job_url else f'/actions/runs/{run_job_url.rsplit("/", 1)[-1]}' \
+    + '/installer.zip'
 print('Installer URL: ' + installerURL)
 response = requests.get(installerURL)
 if not response.ok:
