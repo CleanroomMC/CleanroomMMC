@@ -48,7 +48,7 @@ class DependencyBuilder:
 
     def build(self) -> dict:
         verify(self.builder, 'name')
-        if not self.builder['MMC-hint'] or self.builder['MMC-hint'] is not 'local':
+        if not self.builder['MMC-hint'] or self.builder['MMC-hint'] != 'local':
             verify(self.builder, 'downloads')
             verify(self.builder['downloads']['artifact'], 'sha1', 'size', 'url')
         return self.builder

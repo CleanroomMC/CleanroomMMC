@@ -5,6 +5,7 @@ import re
 import shutil
 import sys
 
+import dotenv
 import requests
 
 import Util
@@ -12,6 +13,7 @@ import metautil
 
 # Init
 print('---> Initialize')
+dotenv.load_dotenv()
 commit_hash = os.getenv('commit_hash')
 run_job_url = os.getenv('run_job_url')
 
@@ -129,7 +131,7 @@ with open(mmc_pack_path, 'w') as __out:
     print('Patched mmc-pack.json')
 
 # Create notes for instance if build callouts from CI
-if commit_hash and run_job_url:
+if commit_hash or run_job_url:
     print('---> Adding notes to instance.cfg')
     instance_cfg_path = os.path.join(output_path, 'instance.cfg')
     with open(instance_cfg_path, 'r') as instance_cfg:
