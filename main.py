@@ -8,6 +8,7 @@ import sys
 import requests
 
 import Util
+import metautil
 
 # Init
 print('---> Initialize')
@@ -42,8 +43,9 @@ branch = Util.get_working_branch(defaultBranch)
 # Download installer artifact
 print('---> Download installer artifact')
 installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/' \
-    + (f'workflows/BuildTest/{branch}' if not run_job_url else f'actions/runs/{run_job_url.rsplit("/", 1)[-1]}') \
-    + '/installer.zip'
+               + (
+                   f'workflows/BuildTest/{branch}' if not run_job_url else f'actions/runs/{run_job_url.rsplit("/", 1)[-1]}') \
+               + '/installer.zip'
 print('Installer URL: ' + installerURL)
 response = requests.get(installerURL)
 if not response.ok:
@@ -73,32 +75,36 @@ shutil.copyfile(
 # Create patch file for Cleanroom
 print('---> Create patch file for Cleanroom')
 cleanroom_patches_output_path = os.path.join(output_path, 'patches', 'net.minecraftforge.json')
+lwjgl_patches_output_path = os.path.join(output_path, 'patches', 'org.lwjgl3.json')
 installer_patches_path = os.path.join(cache_path, 'installer', 'version.json')
 
 with (open(installer_patches_path, 'r') as __in,
-      open(cleanroom_patches_output_path, 'r') as __out):
+      open(cleanroom_patches_output_path, 'r') as cleanroom_patches_out,
+      open(lwjgl_patches_output_path, 'r') as lwjgl_patches_out):
     print('Parsing template patch file')
     data = json.load(__in)['libraries']
-    out_json = json.load(__out)
+    cleanroom_patches_json = json.load(cleanroom_patches_out)
+    lwjgl_patches_json = json.load(lwjgl_patches_out)
 
     for kd in data:
-        sub_kd = {'name': kd['name']}
-        if 'com.cleanroommc:cleanroom' not in kd['name']:
-            sub_kd.update({'downloads': {'artifact': {
-                'sha1': kd['downloads']['artifact']['sha1'],
-                'size': kd['downloads']['artifact']['size'],
-                'url': kd['downloads']['artifact']['url']
-            }}})
-        else:
-            sub_kd['name'] += '-universal'
-            sub_kd['MMC-hint'] = 'local'
         if 'org.lwjgl3:lwjgl3:' in kd['name']:
-            lwjgl_version = str(kd['name']).split(':')[2]
-        out_json['libraries'].append(sub_kd)
+            if not lwjgl_version:
+                lwjgl_version = str(kd['name']).split(':')[2]
+            lwjgl_patches_json['libraries'].append(kd)
+        else:
+            if 'com.cleanroommc:cleanroom' in kd['name']:
+                dep = metautil.DependencyBuilder()
+                dep.set_name(f"{kd['name']}-universal")
+                dep.set_mmc_hint('local')
+                cleanroom_patches_json['libraries'].append(dep.build())
+            else:
+                cleanroom_patches_json['libraries'].append(kd)
 
-    out_json['version'] = cleanroom_version
-with open(cleanroom_patches_output_path, "w") as __out:
-    json.dump(out_json, __out, indent=4)
+    cleanroom_patches_json['version'] = cleanroom_version
+with (open(cleanroom_patches_output_path, "w") as __cleanroom_out,
+      open(lwjgl_patches_output_path, 'r') as __lwjgl_out):
+    json.dump(cleanroom_patches_json, __cleanroom_out, indent=4)
+    json.dump(lwjgl_patches_json, __lwjgl_out, indent=4)
     print('Patch file created')
 
 # Patch mmc-pack.json
@@ -109,12 +115,12 @@ with open(mmc_pack_path) as mmc_pack:
     print('Parsing mmc-pack.json')
     data = json.load(mmc_pack)
     for item in data['components']:
-        if 'LWJGL' in item['cachedName']:
+        if 'org.lwjgl' in item['uid']:
             item['version'] = lwjgl_version
             item['cachedVersion'] = lwjgl_version
-        if 'Minecraft' in item['cachedName']:
+        if 'net.minecraft' is item['uid']:
             item['cachedRequires'][0]['suggests'] = lwjgl_version
-        if 'Cleanroom' in item['cachedName']:
+        if 'net.minecraftforge' is item['uid']:
             item['version'] = cleanroom_version
             item['cachedVersion'] = cleanroom_version
 with open(mmc_pack_path, 'w') as __out:
