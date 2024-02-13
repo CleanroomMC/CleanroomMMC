@@ -102,7 +102,7 @@ with (open(installer_patches_path, 'r') as __in,
 
     cleanroom_patches_json['version'] = cleanroom_version
 with (open(cleanroom_patches_output_path, "w") as __cleanroom_out,
-      open(lwjgl_patches_output_path, 'r') as __lwjgl_out):
+      open(lwjgl_patches_output_path, 'w') as __lwjgl_out):
     json.dump(cleanroom_patches_json, __cleanroom_out, indent=4)
     json.dump(lwjgl_patches_json, __lwjgl_out, indent=4)
     print('Patch file created')
