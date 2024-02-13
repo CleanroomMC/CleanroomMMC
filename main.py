@@ -118,9 +118,9 @@ with open(mmc_pack_path) as mmc_pack:
         if 'org.lwjgl' in item['uid']:
             item['version'] = lwjgl_version
             item['cachedVersion'] = lwjgl_version
-        if 'net.minecraft' is item['uid']:
+        if 'net.minecraft' == item['uid']:
             item['cachedRequires'][0]['suggests'] = lwjgl_version
-        if 'net.minecraftforge' is item['uid']:
+        if 'net.minecraftforge' == item['uid']:
             item['version'] = cleanroom_version
             item['cachedVersion'] = cleanroom_version
 with open(mmc_pack_path, 'w') as __out:
