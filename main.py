@@ -87,7 +87,7 @@ with (open(installer_patches_path, 'r') as __in,
     lwjgl_patches_json = json.load(lwjgl_patches_out)
 
     for kd in data:
-        if 'org.lwjgl3:lwjgl3:' in kd['name']:
+        if 'org.lwjgl3:' in kd['name']:
             if not lwjgl_version:
                 lwjgl_version = str(kd['name']).split(':')[2]
             lwjgl_patches_json['libraries'].append(kd)
@@ -101,6 +101,7 @@ with (open(installer_patches_path, 'r') as __in,
                 cleanroom_patches_json['libraries'].append(kd)
 
     cleanroom_patches_json['version'] = cleanroom_version
+    lwjgl_patches_json['version'] = lwjgl_version
 with (open(cleanroom_patches_output_path, "w") as __cleanroom_out,
       open(lwjgl_patches_output_path, 'w') as __lwjgl_out):
     json.dump(cleanroom_patches_json, __cleanroom_out, indent=4)
