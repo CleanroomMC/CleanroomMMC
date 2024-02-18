@@ -4,6 +4,7 @@ import os
 import re
 import shutil
 import sys
+from distutils.dir_util import copy_tree
 
 import dotenv
 import requests
@@ -60,7 +61,7 @@ open(os.path.join(cache_path, 'installer.zip'), 'wb').write(response.content)
 print('---> Prepare installer and template')
 Util.extractArchive(cache_path, 'installer', cache_path)
 Util.extractArchive(cache_path, 'cleanroom', os.path.join(cache_path, 'installer'))
-Util.extractArchive(template_path, 'template', output_path)
+copy_tree('template', output_path, update=1, verbose=0)
 
 # Read cleanroom version
 print('---> Reading Cleanroom version')
