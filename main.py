@@ -86,7 +86,7 @@ copy_tree('template', output_path, update=1, verbose=0)
 
 # Read cleanroom version
 print('---> Reading Cleanroom version')
-cleanroom_version = Util.findFileName(cache_path, 'cleanroom').split('-')[1]
+cleanroom_version = Util.findFileName(installer_pattern[0], installer_pattern[1]).split('-')[1]
 print('Cleanroom version: ' + cleanroom_version)
 
 # Create libraries folder and copy required
