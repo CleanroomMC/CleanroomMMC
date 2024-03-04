@@ -15,10 +15,18 @@ import metautil
 # Init
 print('---> Initialize')
 dotenv.load_dotenv()
-commit_hash = os.getenv('commit_hash')
-run_job_url = os.getenv('run_job_url')
+COMMIT_HASH = os.getenv('commit_hash')
+RUN_JOB_URL = os.getenv('run_job_url')
+PATH_TO_EXIST_INSTALLER = os.getenv('PATH_TO_EXIST_INSTALLER')
 
-working_path = Util.get_current_directory()
+print('---> Get current working directory')
+split_path = sys.path[0].split(os.sep)
+return_str = ''
+for element in split_path:
+    return_str += element + os.sep
+working_path = return_str.rstrip(os.sep)
+print(f'Current working directory: {working_path}')
+
 cache_path = os.path.join(working_path, 'build', 'downloadCache')
 output_path = os.path.join(working_path, 'build', 'output')
 template_path = os.path.join(working_path, 'template')
@@ -39,28 +47,41 @@ for cleaningDir in [cache_path, output_path]:
             os.remove(path)
 
 # Get download branch from env
-print('---> Get download branch from env')
-defaultBranch = 'main'
-branch = Util.get_working_branch(defaultBranch)
+installer_pattern = [cache_path, 'cleanroom'] # Default installer pattern path
+if not PATH_TO_EXIST_INSTALLER:
+    print('---> Get download branch from env')
+    defaultBranch = 'main'
+    branch = Util.get_working_branch(defaultBranch)
 
-# Download installer artifact
-print('---> Download installer artifact')
-installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/' \
-               + (f'workflows/BuildTest/{branch}' if not run_job_url
-                  else f'actions/runs/{run_job_url.rsplit("/", 1)[-1]}') \
-               + '/installer.zip'
-print('Installer URL: ' + installerURL)
-response = requests.get(installerURL)
-if not response.ok:
-    print('Response failed. Code: ' + str(response.status_code))
-    sys.exit(1)
-print('Downloading installer')
-open(os.path.join(cache_path, 'installer.zip'), 'wb').write(response.content)
+    # Download installer artifact
+    print('---> Download installer artifact')
+    installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/' \
+                   + (f'workflows/BuildTest/{branch}' if not RUN_JOB_URL
+                      else f'actions/runs/{RUN_JOB_URL.rsplit("/", 1)[-1]}') \
+                   + '/installer.zip'
+    print('Installer URL: ' + installerURL)
+    response = requests.get(installerURL)
+    if not response.ok:
+        print('Response failed. Code: ' + str(response.status_code))
+        sys.exit(1)
+    print('Downloading artifact build')
+    open(os.path.join(cache_path, 'installer.zip'), 'wb').write(response.content)
+    print('Downloaded artifact build. Start extracting.')
+    Util.extractArchive(cache_path, 'installer', cache_path)
+    print('Extracted installer from artifact build.')
+else:
+    if os.path.isfile(PATH_TO_EXIST_INSTALLER):
+        installer_pattern = PATH_TO_EXIST_INSTALLER.rsplit(os.sep, 1)
+    else:
+        if os.path.isfile(os.path.join(working_path, PATH_TO_EXIST_INSTALLER)):
+            installer_pattern = [working_path, PATH_TO_EXIST_INSTALLER]
+        else:
+            print('No valid installer path was provided. Using fallback search pattern instead.')
 
 # Prepare installer and template
 print('---> Prepare installer and template')
-Util.extractArchive(cache_path, 'installer', cache_path)
-Util.extractArchive(cache_path, 'cleanroom', os.path.join(cache_path, 'installer'))
+
+Util.extractArchive(installer_pattern[0], installer_pattern[1], os.path.join(cache_path, 'installer'))
 copy_tree('template', output_path, update=1, verbose=0)
 
 # Read cleanroom version
@@ -132,14 +153,14 @@ with open(mmc_pack_path, 'w') as __out:
     print('Patched mmc-pack.json')
 
 # Create notes for instance if build callouts from CI
-if commit_hash or run_job_url:
+if COMMIT_HASH or RUN_JOB_URL:
     print('---> Adding notes to instance.cfg')
     instance_cfg_path = os.path.join(output_path, 'instance.cfg')
     with open(instance_cfg_path, 'r') as instance_cfg:
         content = instance_cfg.read()
         content = re.sub(
             r"notes=.*",
-            rf"notes=This instance is built using Github Action.\\nUsing installer artifact from commit: {commit_hash}\\nAction URL: {run_job_url}",
+            rf"notes=This instance is built using Github Action.\\nUsing installer artifact from commit: {COMMIT_HASH}\\nAction URL: {RUN_JOB_URL}",
             content)
     with open(instance_cfg_path, 'w') as __out:
         __out.write(content)

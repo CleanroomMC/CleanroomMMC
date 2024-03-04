@@ -1,16 +1,7 @@
 import json
 import os
-import sys
 import zipfile
 import urllib.parse
-
-
-def get_current_directory():
-    split_path = sys.path[0].split(os.sep)
-    return_str = ''
-    for element in split_path:
-        return_str += element + os.sep
-    return return_str.rstrip(os.sep)
 
 
 def get_working_branch(default):
@@ -37,8 +28,11 @@ def write_json(filepath, new_data):
 
 
 # function to extract archive with relevant path and name pattern
-def extractArchive(relevant_path, name_pattern, extract_path):
+def extractArchive(relevant_path: str, name_pattern: str, extract_path: str = None):
     file_name = findFileName(relevant_path, name_pattern)
+
+    if not file_name:
+        raise FileNotFoundError(f'No such file: {relevant_path}{os.sep}{name_pattern}')
 
     with MyZipFile(os.path.join(relevant_path, file_name)) as z:
         z.extractall(extract_path)
