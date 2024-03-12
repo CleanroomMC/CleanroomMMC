@@ -4,7 +4,6 @@ import os
 import re
 import shutil
 import sys
-from distutils.dir_util import copy_tree
 
 import dotenv
 import requests
@@ -82,7 +81,7 @@ else:
 print('---> Prepare installer and template')
 
 Util.extractArchive(installer_pattern[0], installer_pattern[1], os.path.join(cache_path, 'installer'))
-copy_tree('template', output_path, update=1, verbose=0)
+shutil.copytree('template', output_path, dirs_exist_ok=True)
 
 # Read cleanroom version
 print('---> Reading Cleanroom version')
@@ -106,7 +105,9 @@ with (open(installer_patches_path, 'r') as __in,
       open(cleanroom_patches_output_path, 'r') as cleanroom_patches_out,
       open(lwjgl_patches_output_path, 'r') as lwjgl_patches_out):
     print('Parsing template patch file')
-    data = json.load(__in)['libraries']
+    version_json = json.load(__in)
+    data = version_json['libraries']
+    mainClass = version_json['mainClass']
     cleanroom_patches_json = json.load(cleanroom_patches_out)
     lwjgl_patches_json = json.load(lwjgl_patches_out)
 
@@ -125,6 +126,7 @@ with (open(installer_patches_path, 'r') as __in,
                 cleanroom_patches_json['libraries'].append(kd)
 
     cleanroom_patches_json['version'] = cleanroom_version
+    cleanroom_patches_json['mainClass'] = mainClass
     lwjgl_patches_json['version'] = lwjgl_version
 with (open(cleanroom_patches_output_path, "w") as __cleanroom_out,
       open(lwjgl_patches_output_path, 'w') as __lwjgl_out):
