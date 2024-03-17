@@ -6,11 +6,11 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
 name: Build Test Instance
-
+run-name: MMC instance of ${{ inputs.branch }}, triggered by @${{ github.actor }}
 on:
   workflow_dispatch:
     inputs:
-      version:
+      branch:
         description: 'Cleanroom branch'
         default: 'main'
   repository_dispatch:
@@ -39,7 +39,7 @@ jobs:
     - name: execute py script # run main.py
       run: python main.py
       env:
-        cleanroomDownloadBranch: ${{ inputs.version }}
+        cleanroomDownloadBranch: ${{ inputs.branch }}
         commit_hash: ${{ github.event.client_payload.commit_hash }}
         run_job_url: ${{ github.event.client_payload.run_job_url }}
 
