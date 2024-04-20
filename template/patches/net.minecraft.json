@@ -25,26 +25,6 @@
         {
             "downloads": {
                 "artifact": {
-                    "sha1": "cb208278274bf12ebdb56c61bd7407e6f774d65a",
-                    "size": 1091208,
-                    "url": "https://libraries.minecraft.net/net/java/dev/jna/jna/4.4.0/jna-4.4.0.jar"
-                }
-            },
-            "name": "net.java.dev.jna:jna:4.4.0"
-        },
-        {
-            "downloads": {
-                "artifact": {
-                    "sha1": "e3f70017be8100d3d6923f50b3d2ee17714e9c13",
-                    "size": 913436,
-                    "url": "https://libraries.minecraft.net/net/java/dev/jna/platform/3.4.0/platform-3.4.0.jar"
-                }
-            },
-            "name": "net.java.dev.jna:platform:3.4.0"
-        },
-        {
-            "downloads": {
-                "artifact": {
                     "sha1": "cdd846cfc4e0f7eefafc02c0f5dce32b9303aa2a",
                     "size": 78175,
                     "url": "https://libraries.minecraft.net/net/sf/jopt-simple/jopt-simple/5.0.3/jopt-simple-5.0.3.jar"
