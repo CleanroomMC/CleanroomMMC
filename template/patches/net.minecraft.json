@@ -15,16 +15,6 @@
         {
             "downloads": {
                 "artifact": {
-                    "sha1": "eb8bb7b66fa0e2152b1b40b3856e82f7619439ee",
-                    "size": 23581,
-                    "url": "https://libraries.minecraft.net/com/mojang/patchy/1.3.9/patchy-1.3.9.jar"
-                }
-            },
-            "name": "com.mojang:patchy:1.3.9"
-        },
-        {
-            "downloads": {
-                "artifact": {
                     "sha1": "cdd846cfc4e0f7eefafc02c0f5dce32b9303aa2a",
                     "size": 78175,
                     "url": "https://libraries.minecraft.net/net/sf/jopt-simple/jopt-simple/5.0.3/jopt-simple-5.0.3.jar"
