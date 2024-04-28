@@ -16,6 +16,7 @@ print('---> Initialize')
 dotenv.load_dotenv()
 COMMIT_HASH = os.getenv('commit_hash')
 RUN_JOB_URL = os.getenv('run_job_url')
+IS_MAIN = os.getenv('cleanroomDownloadBranch')
 PATH_TO_EXIST_INSTALLER = os.getenv('PATH_TO_EXIST_INSTALLER')
 
 print('---> Get current working directory')
@@ -81,7 +82,7 @@ else:
 print('---> Prepare installer and template')
 
 Util.extractArchive(installer_pattern[0], installer_pattern[1], os.path.join(cache_path, 'installer'))
-shutil.copytree('template', output_path, dirs_exist_ok=True)
+shutil.copytree('template', output_path, dirs_exist_ok=True, ignore=shutil.ignore_patterns('*net.minecraft.json'))
 
 # Read cleanroom version
 print('---> Reading Cleanroom version')
@@ -99,6 +100,10 @@ shutil.copyfile(
 print('---> Create patch file for Cleanroom')
 cleanroom_patches_output_path = os.path.join(output_path, 'patches', 'net.minecraftforge.json')
 lwjgl_patches_output_path = os.path.join(output_path, 'patches', 'org.lwjgl3.json')
+shutil.copyfile(
+    os.path.join(template_path, 'patches', "" if IS_MAIN else "old_" + 'net.minecraft.json'),
+    os.path.join(output_path, 'patches', 'net.minecraft.json')
+)
 installer_patches_path = os.path.join(cache_path, 'installer', 'version.json')
 
 with (open(installer_patches_path, 'r') as __in,

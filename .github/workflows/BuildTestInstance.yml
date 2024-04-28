@@ -6,7 +6,7 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
 name: Build Test Instance
-run-name: "[${{ github.event.client_payload.build_type || 'Manual' }}] MMC instance of ${{ inputs.branch || github.event.client_payload.branch }}, triggered by @${{ github.event.client_payload.actor || github.actor }}"
+run-name: "[${{ github.event.client_payload.build_type || 'Manual' }}#${{ github.event.client_payload.number }}] MMC instance of ${{ inputs.branch || github.event.client_payload.branch }}"
 on:
   workflow_dispatch:
     inputs:
@@ -24,10 +24,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v3
 
     - name: setup python
-      uses: actions/setup-python@v5.1.0
+      uses: actions/setup-python@v4
       with:
         python-version: '3.12' # install the python version needed
 
@@ -44,7 +44,7 @@ jobs:
         run_job_url: ${{ github.event.client_payload.run_job_url }}
 
     - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v4.3.2
+      uses: actions/upload-artifact@v3.1.0
       with:
         name: Cleanroom_MMC
         # A file, directory or wildcard pattern that describes what to upload
