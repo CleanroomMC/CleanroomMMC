@@ -16,7 +16,7 @@ print('---> Initialize')
 dotenv.load_dotenv()
 COMMIT_HASH = os.getenv('commit_hash')
 RUN_JOB_URL = os.getenv('run_job_url')
-IS_MAIN = os.getenv('cleanroomDownloadBranch')
+IS_MAIN = os.getenv('cleanroomDownloadBranch') == "main"
 PATH_TO_EXIST_INSTALLER = os.getenv('PATH_TO_EXIST_INSTALLER')
 
 print('---> Get current working directory')
