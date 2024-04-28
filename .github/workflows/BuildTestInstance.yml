@@ -39,7 +39,7 @@ jobs:
     - name: execute py script # run main.py
       run: python main.py
       env:
-        cleanroomDownloadBranch: ${{ inputs.branch }}
+        cleanroomDownloadBranch: ${{ inputs.branch || github.event.client_payload.branch }}
         commit_hash: ${{ github.event.client_payload.commit_hash }}
         run_job_url: ${{ github.event.client_payload.run_job_url }}
 
