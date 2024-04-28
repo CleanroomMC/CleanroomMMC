@@ -102,7 +102,7 @@ print('---> Create patch file for Cleanroom')
 cleanroom_patches_output_path = os.path.join(output_path, 'patches', 'net.minecraftforge.json')
 lwjgl_patches_output_path = os.path.join(output_path, 'patches', 'org.lwjgl3.json')
 shutil.copyfile(
-    os.path.join(template_path, 'patches', "old_" if IS_MAIN else "" + 'net.minecraft.json'),
+    os.path.join(template_path, 'patches', ("old_" if IS_MAIN else "") + 'net.minecraft.json'),
     os.path.join(output_path, 'patches', 'net.minecraft.json')
 )
 installer_patches_path = os.path.join(cache_path, 'installer', 'version.json')
