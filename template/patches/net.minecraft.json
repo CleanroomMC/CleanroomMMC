@@ -15,16 +15,6 @@
         {
             "downloads": {
                 "artifact": {
-                    "sha1": "cdd846cfc4e0f7eefafc02c0f5dce32b9303aa2a",
-                    "size": 78175,
-                    "url": "https://libraries.minecraft.net/net/sf/jopt-simple/jopt-simple/5.0.3/jopt-simple-5.0.3.jar"
-                }
-            },
-            "name": "net.sf.jopt-simple:jopt-simple:5.0.3"
-        },
-        {
-            "downloads": {
-                "artifact": {
                     "sha1": "c73b5636faf089d9f00e8732a829577de25237ee",
                     "size": 103871,
                     "url": "https://libraries.minecraft.net/com/paulscode/codecjorbis/20101023/codecjorbis-20101023.jar"
