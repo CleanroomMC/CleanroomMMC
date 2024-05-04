@@ -59,7 +59,7 @@ if not PATH_TO_EXIST_INSTALLER:
     installerURL = 'https://nightly.link/CleanroomMC/Cleanroom/' \
                    + (f'workflows/BuildTest/{branch}' if not RUN_JOB_URL
                       else f'actions/runs/{RUN_JOB_URL.rsplit("/", 1)[-1]}') \
-                   + '/installer' + os.getenv('version') + '.zip'
+                   + '/installer-' + os.getenv('version') + '.zip'
     print('Installer URL: ' + installerURL)
     response = requests.get(installerURL)
     if not response.ok:
