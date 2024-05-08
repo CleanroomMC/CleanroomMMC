@@ -40,6 +40,7 @@ def extractArchive(relevant_path: str, name_pattern: str, extract_path: str = No
 
 # function to find file via pattern
 def findFileName(relevant_path, name_pattern):
+    print(os.listdir(relevant_path))
     for fn in os.listdir(relevant_path):
         if fn.startswith(name_pattern):
             return fn
