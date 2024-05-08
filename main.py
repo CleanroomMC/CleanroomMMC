@@ -16,7 +16,8 @@ print('---> Initialize')
 dotenv.load_dotenv()
 COMMIT_HASH = os.getenv('commit_hash')
 RUN_JOB_URL = os.getenv('run_job_url')
-print('We are running on ' + os.getenv('cleanroomDownloadBranch'))
+BRANCH = os.getenv('cleanroomDownloadBranch')
+print('We are running on ' + ("local" if BRANCH is None else BRANCH))
 IS_MAIN = os.getenv('cleanroomDownloadBranch') == "main"
 PATH_TO_EXIST_INSTALLER = os.getenv('PATH_TO_EXIST_INSTALLER')
 
@@ -48,7 +49,7 @@ for cleaningDir in [cache_path, output_path]:
             os.remove(path)
 
 # Get download branch from env
-installer_pattern = [cache_path, 'cleanroom'] # Default installer pattern path
+installer_pattern = [cache_path, 'cleanroom']  # Default installer pattern path
 if not PATH_TO_EXIST_INSTALLER:
     print('---> Get download branch from env')
     defaultBranch = 'main'

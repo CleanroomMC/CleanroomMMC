@@ -40,8 +40,9 @@ def extractArchive(relevant_path: str, name_pattern: str, extract_path: str = No
 
 # function to find file via pattern
 def findFileName(relevant_path, name_pattern):
-    return [fn for fn in os.listdir(relevant_path)
-            if any(fn.startswith(ext) for ext in name_pattern)][0]
+    for fn in os.listdir(relevant_path):
+        if fn.startswith(name_pattern):
+            return fn
 
 
 class MyZipFile(zipfile.ZipFile):
