@@ -126,8 +126,7 @@ with (open(installer_patches_path, 'r') as __in,
         else:
             if 'com.cleanroommc:cleanroom' in kd['name']:
                 dep = metautil.DependencyBuilder()
-                cleanroom_name = kd['name'].split('+')[0]
-                dep.set_name(f"{cleanroom_name}-universal")
+                dep.set_name(f"{kd['name']}-universal")
                 dep.set_mmc_hint('local')
                 cleanroom_patches_json['libraries'].append(dep.build())
             else:
