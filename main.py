@@ -90,6 +90,8 @@ shutil.copytree('template', output_path, dirs_exist_ok=True, ignore=shutil.ignor
 print('---> Reading Cleanroom version')
 installer_name = Util.findFileName(installer_pattern[0], installer_pattern[1])
 cleanroom_version = installer_name.split('-')[1] + '-' + installer_name.split('-')[2]
+if cleanroom_version.startswith('0.1'):
+    IS_MAIN = True
 print('Cleanroom version: ' + cleanroom_version)
 
 # Create libraries folder and copy required
