@@ -98,12 +98,6 @@
                 {
                     "action": "disallow",
                     "os": {
-                        "name": "osx-arm64"
-                    }
-                },
-                {
-                    "action": "disallow",
-                    "os": {
                         "name": "linux-arm64"
                     }
                 },
