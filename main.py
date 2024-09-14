@@ -127,7 +127,9 @@ with (open(installer_patches_path, 'r') as __in,
                 lwjgl_version = str(kd['name']).split(':')[2]
             # Temp fix for prism launcher (allow ARM64 arch)
             if '-arm64' in kd['name']:
-                kd['rules'][0]['os']['name'] += "-arm64"
+                temp = {'action': 'allow', 'os': {}}
+                temp['os']['name'] = kd['rules'][0]['os']['name'] + "-arm64"
+                kd['rules'].append(temp)
             lwjgl_patches_json['libraries'].append(kd)
         else:
             if 'com.cleanroommc:cleanroom' in kd['name']:
