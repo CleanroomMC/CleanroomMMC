@@ -122,7 +122,7 @@ with (open(installer_patches_path, 'r') as __in,
     lwjgl_patches_json = json.load(lwjgl_patches_out)
 
     for kd in data:
-        if 'org.lwjgl3:' in kd['name']:
+        if 'org.lwjgl3:' in kd['name'] or 'org.lwjgl:' in kd['name']:
             if not lwjgl_version:
                 lwjgl_version = str(kd['name']).split(':')[2]
             # Temp fix for prism launcher (allow ARM64 arch)
